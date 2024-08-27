@@ -11,8 +11,10 @@
 
 <body>
   <div class="dashboard">
-    <img src="https://ascentt-wl-training-s3.s3.amazonaws.com/ANN/Wave+Sound.gif" alt="Car Dashboard" class="dashboard-gif">
+    <img src="https://ascentt-wl-training-s3.s3.amazonaws.com/ANN/Wave+Sound.gif" alt="Car Dashboard"
+      class="dashboard-gif">
   </div>
+  <button id="speak-button"></button>
   <script>
     // function startRecognition() {
     //   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -32,57 +34,92 @@
     //     console.log('You said: ', transcript);
     // Start continuous speech recognition when the page loads
     window.addEventListener('load', startContinuousRecognition);
-
-var transcript = '';
-let recognition;
-function startContinuousRecognition() {
-    if ('webkitSpeechRecognition' in window) {
+    var transcript = '';
+    let recognition;
+    function startContinuousRecognition() {
+      if ('webkitSpeechRecognition' in window) {
         recognition = new webkitSpeechRecognition();
         recognition.continuous = true;  // Keep recognizing continuously
         recognition.interimResults = true;  // Show results as they are spoken
         recognition.lang = 'en-US';  // Set the language
 
-        recognition.onstart = function() {
-            console.log('Speech recognition started');
+        recognition.onstart = function () {
+          console.log('Speech recognition started');
         };
+        function speakText(text) {
+          let utterance = new SpeechSynthesisUtterance(text);
+          utterance.voice = window.speechSynthesis.getVoices()[0];
+          window.speechSynthesis.speak(utterance);
 
-        recognition.onresult = function(event) {
-        let dummy="";
-            for (var i = event.resultIndex; i < event.results.length; i++) {
-                if (event.results[i].isFinal) {
-                    transcript += event.results[i][0].transcript;
-                    dummy += event.results[i][0].transcript;
+        }
+        recognition.onresult = function (event) {
+          let dummy = "";
+          for (var i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              transcript += event.results[i][0].transcript;
+              dummy += event.results[i][0].transcript;
+            }
+          }
+
+          const keyword1 = 'close';
+          const keyword = 'vijay';
+          if (transcript.toLowerCase().includes(keyword.toLowerCase())) {
+            console.log("Recogising......")
+            speakText(dummy);
+            console.log('Keyword detected:', dummy);
+            sendTranscriptToServer(dummy)
+            function sendTranscriptToServer(transcript) {
+              fetch("{% url 'process_transcript' %}", {  // Use the Django template tag to generate the correct URL
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': getCookie('csrftoken')  // Ensure you handle CSRF token if needed
+                },
+                body: JSON.stringify({ transcript: transcript })
+              })
+                .then(response => response.json())
+                .then(data => {
+                  console.log('Success:', data);
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                });
+            }
+            function getCookie(name) {
+              let cookieValue = null;
+              if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                  }
                 }
+              }
+              return cookieValue;
             }
-
-            // Check if the transcript contains the specific keyword
-            const keyword1 = 'close';
-            const keyword = 'vijay';  // Replace with your keyword
-            if (transcript.toLowerCase().includes(keyword.toLowerCase())) {
-                console.log("Recogising......")
-                console.log('Keyword detected:', dummy);
-                // Store or process the transcript as needed
-            }  // Replace with your keyword
-            if (dummy.toLowerCase().includes(keyword1.toLowerCase())) {
-                console.log("Closing");
-                window.alert(transcript);
-                transcript= '';
-                console.log("deleting data",transcript);
-            }
+          }
+          if (dummy.toLowerCase().includes(keyword1.toLowerCase())) {
+            console.log("Closing");
+            window.alert(transcript)
+            transcript = '';
+            console.log("deleting data", transcript);
+          }
         };
 
-        recognition.onerror = function(event) {
-            console.error('Speech recognition error:', event.error);
+        recognition.onerror = function (event) {
+          console.error('Speech recognition error:', event.error);
         };
 
-        recognition.onend = function() {
-            console.log('Speech recognition ended');
-            // Optionally restart recognition if it stops
-            startContinuousRecognition();
+        recognition.onend = function () {
+          console.log('Speech recognition ended');
+          // Optionally restart recognition if it stops
+          startContinuousRecognition();
         };
 
         recognition.start();
-   
+
 
         // l = document.getElementById("Reco").innerHTML
         // document.getElementById("Reco").innerHTML = l + "<br>" + "<p>" + transcript + "</p>";
@@ -105,34 +142,17 @@ function startContinuousRecognition() {
         //   // Speak the utterance
         //   window.speechSynthesis.speak(utterance);
         // });
-        
-      }else {
+
+      } else {
         alert('Speech recognition is not supported in this browser.');
+      }
     }
-  }
-      recognition.onerror = function (event) {
-        console.error('Speech recognition error:', event.error);
-      };
+    recognition.onerror = function (event) {
+      console.error('Speech recognition error:', event.error);
+    };
 
-      recognition.start();
+    recognition.start();
 
-let speakButton = document.getElementById("speak-button");
-
-// Add an event listener to the speak button
-speakButton.addEventListener("click", function () {
-  // Get the text from the text area
-  let text = transcript;
-
-  // Create a new SpeechSynthesisUtterance object
-  let utterance = new SpeechSynthesisUtterance();
-
-  // Set the text and voice of the utterance
-  utterance.text = text;
-  utterance.voice = window.speechSynthesis.getVoices()[0];
-
-  // Speak the utterance
-  window.speechSynthesis.speak(utterance);
-});
 
   </script>
 </body>

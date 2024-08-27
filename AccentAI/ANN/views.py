@@ -8,14 +8,9 @@ def index(request):
     return render(request, 'index.html')
 def process_transcript(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
+        global transcript 
         transcript = data.get('transcript')
-        
-        # Now you have access to the 'transcript' variable
-        print("Received transcript:", transcript)
-
-        # Do something with the transcript...
-        response_data = {'message': 'Transcript received successfully'}
-        return JsonResponse(response_data)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
+        # Process the transcript here
+        return JsonResponse({'status': 'success', 'transcript': transcript})
+    return JsonResponse({'status': 'failed', 'message': 'Invalid request method'})

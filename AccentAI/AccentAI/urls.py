@@ -20,5 +20,5 @@ from ANN.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',index),
-    path('process_transcript', process_transcript)
+    path('process_transcript/', process_transcript,name='process_transcript')
 ]
