@@ -65,7 +65,7 @@
           const keyword = 'vijay';
           if (transcript.toLowerCase().includes(keyword.toLowerCase())) {
             console.log("Recogising......")
-            speakText(dummy);
+            // speakText(dummy);
             console.log('Keyword detected:', dummy);
             sendTranscriptToServer(dummy)
             function sendTranscriptToServer(transcript) {
