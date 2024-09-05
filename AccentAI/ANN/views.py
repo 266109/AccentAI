@@ -11,8 +11,8 @@ import pyttsx3
 import edge_tts
 import asyncio
 import playsound
+import requests
 
-engine=pyttsx3.init()
 # model= pipeline(model="huseinzol05/text-to-speech-tacotron-male")
 
 
@@ -28,13 +28,13 @@ async def generate_voice(text: str):
             if chunk["type"] == "audio":
                 audio_file.write(chunk["data"])
 
+API_KEY = 'AIzaSyBQ84xDL2RcAm31Gf7fZmKqOHh_QQaRHlU'
 
 
 memory=ConversationBufferMemory()
 
 
 llm=ChatGoogleGenerativeAI(model="gemini-pro",api_key="AIzaSyB0_JjKxykqnqZkviJ2-JDQtqO0CjMnJkE")
-
 
 prompt="""You are a highly knowledgeable expert Vijay on car care and maintenance. 
 I will ask you questions about various aspects of car care, such as engine maintenance, tire care, interior cleaning, and more. 
@@ -47,10 +47,22 @@ If I ask you a question outside of the car care domain,
 please respond with a polite message indicating that you can only assist with car-related topics..  
             Question: {promp}"""
 
+prompt1="""Detect the language of the following text and return only the name of the language without any additional information:
 
+[{}]"""
+
+prompt2="""Convert the following text into [Target Language] but write it using the English alphabet (transliteration). and do not provide Additional Information:
+
+Text: "[{}]"
+Target Language: "[{}]"""
+
+prompt3="""Translate the following text from [Source Language] to [Target Language]. Return only the translated text without any additional information:
+
+Text: "[{}]"
+Source Language: "[{}]"
+Target Language: "[{}]"""
 prompt=PromptTemplate(template=prompt)
 chain=LLMChain(llm=llm,memory=memory,prompt=prompt)
-
 
 
 def index(request):
@@ -63,9 +75,16 @@ def process_transcript(request):
         transcript = data.get('transcript')
         # Process the transcript here
         if transcript.strip()!="":
-            result=chain.invoke({"promp":transcript})
-            print(result["text"])
-            asyncio.run(generate_voice(result["text"].replace("*","")))
+            language=llm.invoke(prompt1.format(transcript)).content
+            print("Language Detected: ",language)
+            text=llm.invoke(prompt3.format(transcript,language,"English")).content
+            print("Converted Text: ",text)
+            result=chain.invoke({"promp":text})
+            result=result["text"]
+            print("Result in English: ",result)
+            final_result=llm.invoke(prompt2.format(result,language)).content
+            print("result in Native: ",final_result)
+            asyncio.run(generate_voice(final_result.replace("*","")))
             playsound.playsound('D:/Ascentt/UI UX/AccentAI/AccentAI/output_audio.mp3',True)
                 # model(result.content)
             return JsonResponse({'status': 'success', 'transcript': transcript})

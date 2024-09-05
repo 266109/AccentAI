@@ -1,22 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speech Recognition Dashboard</title>
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'style.css' %}">
-</head>
-
-<body>
-  <div class="outer-container">
-    <div class="circle-container">
-      <img src="https://ascentt-wl-training-s3.s3.amazonaws.com/ANN/Wave+Sound.gif" alt="Wave Sound">
-    </div>
-  </div>
-  <script>
-    // function startRecognition() {
+  // function startRecognition() {
     //   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     //   recognition.lang = 'en-US';
     //   recognition.interimResults = false;
@@ -153,8 +135,3 @@
 
     recognition.start();
 
-
-  </script>
-</body>
-
-</html>
