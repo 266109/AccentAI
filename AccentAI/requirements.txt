@@ -1,0 +1,7 @@
+Django
+langchain-google-genai
+langchain
+transformers
+pyttsx3
+edge-tts
+playsound
