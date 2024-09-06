@@ -7,12 +7,12 @@ from langchain.memory import ConversationBufferMemory
 from transformers import pipeline
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
-import pyttsx3
+#import pyttsx3
 import edge_tts
 import asyncio
 import playsound
 
-engine=pyttsx3.init()
+#engine=pyttsx3.init()
 # model= pipeline(model="huseinzol05/text-to-speech-tacotron-male")
 
 
