@@ -10,4 +10,4 @@ playsound
 langchain_google_genai
 #pygobject
 #pyttsx3
-espeak
+#espeak
