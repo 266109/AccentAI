@@ -1,13 +1,13 @@
 django 
 pytorch
-tensorflow
+#tensorflow
 langchain
 transformers
-pyttsx3
+#pyttsx3
 edge_tts
 asyncio
 playsound
 langchain_google_genai
-pygobject
-pyttsx3
+#pygobject
+#pyttsx3
 espeak
