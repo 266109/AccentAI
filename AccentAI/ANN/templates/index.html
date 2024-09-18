@@ -10,9 +10,11 @@
 </head>
 
 <body>
-  <div class="outer-container">
-    <div class="circle-container">
-      <img src="https://ascentt-wl-training-s3.s3.amazonaws.com/ANN/Wave+Sound.gif" alt="Wave Sound">
+  <div id="Nothing">
+    <div class="">
+      <div class="circle-container">
+        <img src="https://ascentt-wl-training-s3.s3.amazonaws.com/ANN/Wave+Sound.gif" alt="Wave Sound">
+      </div>
     </div>
   </div>
   <script>
@@ -39,9 +41,9 @@
     function startContinuousRecognition() {
       if ('webkitSpeechRecognition' in window) {
         recognition = new webkitSpeechRecognition();
-        recognition.continuous = true;  // Keep recognizing continuously
-        recognition.interimResults = true;  // Show results as they are spoken
-        recognition.lang = 'en-US';  // Set the language
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
 
         recognition.onstart = function () {
           console.log('Speech recognition started');
@@ -54,6 +56,8 @@
         }
         recognition.onresult = function (event) {
           let dummy = "";
+          // transcript = '';
+
           for (var i = event.resultIndex; i < event.results.length; i++) {
             if (event.results[i].isFinal) {
               transcript += event.results[i][0].transcript;
@@ -62,21 +66,27 @@
           }
 
           const keyword1 = 'close';
-          const keyword = 'vijay';
+          const keyword = 'eco';
           if (transcript.toLowerCase().includes(keyword.toLowerCase())) {
             console.log("Recogising......")
             // speakText(dummy);
             console.log('Keyword detected:', dummy);
+            document.getElementById("Nothing").innerHTML = "<div class='outer-container'><div class='circle-container'><img src='https://ascentt-wl-training-s3.s3.amazonaws.com/ANN/Wave+Sound.gif' alt='Wave Sound'>  </div>  </div>"
+
             sendTranscriptToServer(dummy)
+            transcript = '';
             function sendTranscriptToServer(transcript) {
-              fetch("{% url 'process_transcript' %}", {  // Use the Django template tag to generate the correct URL
+              fetch("{% url 'process_transcript' %}", {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
-                  'X-CSRFToken': getCookie('csrftoken')  // Ensure you handle CSRF token if needed
+                  'X-CSRFToken': getCookie('csrftoken')
                 },
                 body: JSON.stringify({ transcript: transcript })
-              })
+
+              }
+              )
+
                 .then(response => response.json())
                 .then(data => {
                   console.log('Success:', data);
@@ -99,13 +109,11 @@
               }
               return cookieValue;
             }
+          } else {
+            document.getElementById("Nothing").innerHTML = "<div class=''><div class='circle-container'><img src='https://ascentt-wl-training-s3.s3.amazonaws.com/ANN/Wave+Sound.gif' alt='Wave Sound'>  </div>  </div>"
+
           }
-          if (dummy.toLowerCase().includes(keyword1.toLowerCase())) {
-            console.log("Closing");
-            window.alert(transcript)
-            transcript = '';
-            console.log("deleting data", transcript);
-          }
+
         };
 
         recognition.onerror = function (event) {

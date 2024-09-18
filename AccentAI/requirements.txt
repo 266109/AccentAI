@@ -1,4 +1,4 @@
-Django
+django
 langchain-google-genai
 langchain
 transformers

@@ -16,9 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from ANN import views
 from ANN.views import *
+from ANN.views import receive_data
+#from . import views
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+#    path('admin/', admin.site.urls),
     path('',index),
-    path('process_transcript/', process_transcript,name='process_transcript')
+    path('data/',views.receive_data, name='receive_data'),
+  #  path('process_transcript/', process_transcript,name='process_transcript'),
+ #   path('submit-transcript/', views.submit_transcript, name='submit-transcript'),
+#    path('receive-data/', receive_data, name='receive_data'),
+#    path('send-transcript/', views.send_transcript_to_server, name='send_transcript')
 ]

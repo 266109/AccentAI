@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-9e$@y2-=4$9-_fyqc_lkia%7pfyp$s6@11w-s57a)+o3#j=vm+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['44.204.141.165','www.nicecomputers.org','nicecomputers.org']
 
 
 # Application definition
@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'ANN',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -48,8 +50,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
-
+CORS_ALLOWED_ORIGINS = [
+    'https://nicecomputers.org',
+    'https://www.nicecomputers.org',
+]
 ROOT_URLCONF = 'AccentAI.urls'
 
 TEMPLATES = [
@@ -116,9 +122,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/ 
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+#CSRF_TRUSTED_ORIGINS = ['40.204.141.165','https://nicecomputers.org','https://www.nicecomputers.org']
+CSRF_TRUSTED_ORIGINS = [
+    'https://40.204.141.165',  # Replace with https if you are using SSL
+    'https://nicecomputers.org',  # Include any other domains you're using
+]
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
