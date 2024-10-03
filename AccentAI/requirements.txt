@@ -5,3 +5,5 @@ transformers
 pyttsx3
 edge-tts
 playsound
+Django>=3.2
+gunicorn
